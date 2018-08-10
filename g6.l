@@ -1,5 +1,5 @@
 %{
-#include "y.tab.h"
+#include "y.g6.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -83,6 +83,18 @@ RET             [\n]
 		}
 {IF}         	{
 		return _IF;
+		}
+{WHILE}         {
+		return _WHILE;
+		}
+{ELSE}         	{
+		return _ELSE;
+		}
+{THEN}         {
+		return _THEN;
+		}
+{DO}         	{
+		return _DO;
 		}
 {IDENT}         {
 		strcpy(yylval.t.symbol, yytext);

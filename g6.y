@@ -110,7 +110,7 @@ ADD,
 SUB,
 MUL,
 DIV,
-STO,
+ATRIB,
 PRINT
 } Operador;
 
@@ -227,17 +227,17 @@ C    : _ABRECOL C _FECHACOL {
          $$.intval = temp(); 
 		 gera (DIV,$1.intval,$3.intval,$$.intval);
     } 
-S    : _IF E _t _M _B _e _B {
+S    : _IF E _THEN _M _B _ELSE _B {
             /* S-> if (E) then B else B */	
             $$.intval = temp(); 
 		    gera (MUL,$1.intval,$3.intval,$$.intval);
     }	
-    | _IF E _t _M _B { 
+    | _IF E _THEN _M _B { 
             /* S-> if (E) then B */	
             $$.intval = temp(); 
 		    gera (DIV,$1.intval,$3.intval,$$.intval);
     }     
-    | _WHILE _N E _M _d _B { 
+    | _WHILE _N E _M _DO _B { 
             /* S-> while (E) do B */	
             $$.intval = temp(); 
 		    gera (DIV,$1.intval,$3.intval,$$.intval);
@@ -246,15 +246,12 @@ S    : _IF E _t _M _B _e _B {
             $$.intval = temp(); 
 		    gera (DIV,$1.intval,$3.intval,$$.intval);
     } 
-    | _PRINT _ABREPAR L _FECHAPAR { 
-            /* S-> print(L) */	
+    | _PRINT _ABREPAR E _FECHAPAR { 
+            /* S-> print(E) */	
             $$.intval = temp(); 
 		    gera (DIV,$1.intval,$3.intval,$$.intval);
     } 
-L     : L _VIRG E {
-            /* F-> (E) */ 
-		$$.intval = $2.intval;
-    } 
+
 E    : E _MAIS T { 
             /* E-> E+T */
             $$.intval = temp(); 
