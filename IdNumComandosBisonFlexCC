@@ -1,0 +1,27 @@
+guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ bison -d IdNum.y
+guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ flex IdNum.l
+guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ cc lex.yy.c IdNum.tab.c -o IdNum
+IdNum.y:66:6: warning: conflicting types for ‘yyerror’ [enabled by default]
+ void yyerror(const char *str)
+      ^
+IdNum.y:56:5: note: previous implicit declaration of ‘yyerror’ was here
+     yyerror (ptMsg);
+     ^
+guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ ls
+IdNum  IdNum.l  IdNum.l~  IdNum.tab.c  IdNum.tab.h  IdNum.y  IdNum.y~  lex.yy.c
+guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ ./IdNum
+...>IdNum 
+>x 1 y 2 z 3
+
+> Variable: x 0 
+>
+> Numerical Constant: 1 1 
+>
+> Variable: y 0 
+>
+> Numerical Constant: 2 2 
+>
+> Variable: z 0 
+>
+> Numerical Constant: 3 3 
+>End normal compilation! 
