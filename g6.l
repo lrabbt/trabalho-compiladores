@@ -21,8 +21,8 @@ IF				"if"
 THEN            "then"
 ELSE			"else"
 DO              "do"
-
 INTTYPE			"int"
+
 IDENT			{ALFA}({ALFA}|{DIGIT})*
 WS              [ \t]*
 ATRIB			"="
@@ -67,7 +67,7 @@ RET             [\n]
                 return _FECHACOL;
                 }
 {PTV}		{
-		return _PTVIRG;
+		return _PTV;
 		}
 {VIRG}          {
 		return _VIRG;

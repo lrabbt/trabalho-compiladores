@@ -110,9 +110,12 @@ ADD,
 SUB,
 MUL,
 DIV,
-ATRIB,
+STO,
 PRINT
 } Operador;
+
+char nomeOperador  [6] [7] = {
+"ADD","SUB","MUL","DIV","STO","PRINT"};
 
 struct Quadrupla {
 	Operador        op;
@@ -184,7 +187,7 @@ int main()
     int indiceQuadrupla;
   } j;
 }
-%token _ATRIB _EOF _ABREPAR _FECHAPAR _ABRECOL _FECHACOL _PTVIRG _VIRG
+%token _ATRIB _EOF _ABREPAR _FECHAPAR _ABRECOL _FECHACOL _VIRG
 %token _MAIS _MENOS _MULT _DIVID _PRINT _WHILE _IF _THEN _ELSE _DO
 %token _ERRO _INTTYPE _PTV
 %token _N _V _ID
@@ -195,26 +198,28 @@ int main()
 regras da gramatica e acoes semanticas
 */
 
-P    : D _ABRECOL C _FECHACOL /* P-> D {C} */
+P    : D _ABRECOL C _FECHACOL { 
+        finaliza();
+    }
      | {
         /* empty */
         finaliza ();
-     }
+    }
 
 D    : D V _PTV {
           /* D -> D V; */
     }
-    | V _PTV{  
+    | V _PTV {  
           /* D-> V; */
     }
 
 V   : V _VIRG _ID { 
           /* V-> V, id */
-          $3.intval = insertSymbTab($3.symbol, Variable);
+          insertSymbTab($3.symbol, Variable);
     }
-    | _INTTYPE _ID{  
+    | _INTTYPE _ID {  
           /* V-> int id */
-          $2.intval = insertSymbTab($2.symbol, Variable);
+          insertSymbTab($2.symbol, Variable);
     }
 
 B    : _ABRECOL C _FECHACOL { 
@@ -241,7 +246,8 @@ S    : _IF _ABREPAR E _FECHAPAR _THEN B _ELSE B {
             /* S-> while (E) do B */	
     } 
     | _ID _ATRIB E { /* S-> id = E */	
-            gera (ATRIB,$3.intval,$1.intval,NADA);
+            $1.intval = insertSymbTab($1.symbol, Variable);
+            gera (STO,$3.intval,$1.intval,NADA);
             printf("\n");
     } 
     | _PRINT _ABREPAR E _FECHAPAR { 
