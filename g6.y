@@ -248,8 +248,10 @@ S    : _IF _ABREPAR E _FECHAPAR _THEN M B _ELSE M B {
             /* S-> if (E) then B */	
             remenda($6.indiceQuadrupla, JF, $3.intval, prox, NADA);
     }     
-    | _WHILE _ABREPAR E _FECHAPAR _DO B { 
+    | _WHILE M _ABREPAR E _FECHAPAR M _DO B { 
             /* S-> while (E) do B */	
+            gera(JUMP, $2.indiceQuadrupla, NADA, NADA);
+            remenda($6.indiceQuadrupla, JF, $4.intval, prox, NADA);
     } 
     | _ID _ATRIB E { /* S-> id = E */	
             $1.intval = insertSymbTab($1.symbol, Variable);
