@@ -1,5 +1,5 @@
 %{
-#include "y.g6.h"
+#include "g6.tab.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,7 +8,7 @@ char *yytext;
 YYSTYPE yylval;
 %}
 
-ALFA 		[A-Za-z_]
+ALFA 			[A-Za-z_]
 PLUS            [\+]
 MINUS           [\-]
 TIMES           [\*]
@@ -17,14 +17,15 @@ DIGIT           [0-9]
 NUMBER          ({DIGIT}+)
 PRINT           "print"
 WHILE           "while"
-IF		"if"
+IF				"if"
 THEN            "then"
-ELSE		"else"
+ELSE			"else"
 DO              "do"
 
-IDENT		{ALFA}({ALFA}|{DIGIT})*
+INTTYPE			"int"
+IDENT			{ALFA}({ALFA}|{DIGIT})*
 WS              [ \t]*
-ATRIB		"="
+ATRIB			"="
 LP              "("
 RP              ")"
 LC              "{"
@@ -96,9 +97,12 @@ RET             [\n]
 {DO}         	{
 		return _DO;
 		}
+{INTTYPE}         	{
+		return _INTTYPE;
+		}
 {IDENT}         {
 		strcpy(yylval.t.symbol, yytext);
-		return _V;
+		return _ID;
 		}
 {RET}           {
                 return yytext[0];

@@ -130,6 +130,14 @@ void gera (Operador codop,int end1,int end2,int end3){
 	quadrupla [prox].operando3 = end3;
 	prox++;
 	};
+
+void remenda (int posicao, Operador codop,int end1,int end2,int end3){
+  quadrupla [posicao].op = codop;
+  quadrupla [posicao].operando1 = end1;
+  quadrupla [posicao].operando2 = end2;
+  quadrupla [posicao].operando3 = end3;
+  };
+
 void imprimeQuadrupla(){
   int r; 
   for(r=0;r<prox;r++) 
@@ -171,11 +179,17 @@ int main()
     char symbol[21]; 
     int intval;}t;
  }
+%union{
+  struct J{
+    int indiceQuadrupla;
+  } j;
+}
 %token _ATRIB _EOF _ABREPAR _FECHAPAR _ABRECOL _FECHACOL _PTVIRG _VIRG
 %token _MAIS _MENOS _MULT _DIVID _PRINT _WHILE _IF _THEN _ELSE _DO
-%token _ERRO
-%token _N _V
-%type<t> B C S L E T F _N _V _id _t _M _B _e
+%token _ERRO _INTTYPE _PTV
+%token _N _V _ID
+%type<t> B C S E T F _N _V _ID
+%type<j> M N
 %%
 /* 
 regras da gramatica e acoes semanticas
@@ -186,101 +200,99 @@ P    : D _ABRECOL C _FECHACOL /* P-> D {C} */
         /* empty */
         finaliza ();
      }
-D    : D V _PTV { 
-           /* D-> D V; */
-		   $1.intval = insertSymbTab($1.symbol, Variable);
-		   gera(STO,$3.intval,$1.intval,NADA);
-		   printf("\n");
+
+D    : D V _PTV {
+          /* D -> D V; */
     }
-    |V _PTV{  
-           /* D-> V; */
-           gera(PRINT,$3.intval, NADA, NADA);
-		   printf("\n");
+    | V _PTV{  
+          /* D-> V; */
     }
-V   : V _VIRG _id { 
-           /* V-> V, id */
-           $$.intval = temp(); 
-		   gera (ADD,$1.intval,$3.intval,$$.intval);
+
+V   : V _VIRG _ID { 
+          /* V-> V, id */
+          $3.intval = insertSymbTab($3.symbol, Variable);
     }
-    | int _id{  
-            /* V-> int id */
-            $$.intval = temp(); 
-		    gera (SUB,$1.intval,$3.intval,$$.intval);
+    | _INTTYPE _ID{  
+          /* V-> int id */
+          $2.intval = insertSymbTab($2.symbol, Variable);
     }
+
 B    : _ABRECOL C _FECHACOL { 
             /* B-> {C} */	
-            $$.intval = temp(); 
-		    gera (MUL,$1.intval,$3.intval,$$.intval);
     }	
     | S { 
             /* B-> S */	
-            $$.intval = temp(); 
-		    gera (DIV,$1.intval,$3.intval,$$.intval);
     }
 
-C    : _ABRECOL C _FECHACOL { 
-            /* C-> C; S */	
-            $$.intval = temp(); 
-		    gera (MUL,$1.intval,$3.intval,$$.intval);
+C    : C _PTV S { 
+            /* C-> C; S */
     }	
-     | S { /* C-> S */	
-         $$.intval = temp(); 
-		 gera (DIV,$1.intval,$3.intval,$$.intval);
+     | S { 
+            /* C-> S */
     } 
-S    : _IF E _THEN _M _B _ELSE _B {
+
+S    : _IF _ABREPAR E _FECHAPAR _THEN B _ELSE B {
             /* S-> if (E) then B else B */	
-            $$.intval = temp(); 
-		    gera (MUL,$1.intval,$3.intval,$$.intval);
     }	
-    | _IF E _THEN _M _B { 
+    | _IF _ABREPAR E _FECHAPAR _THEN B { 
             /* S-> if (E) then B */	
-            $$.intval = temp(); 
-		    gera (DIV,$1.intval,$3.intval,$$.intval);
     }     
-    | _WHILE _N E _M _DO _B { 
+    | _WHILE _ABREPAR E _FECHAPAR _DO B { 
             /* S-> while (E) do B */	
-            $$.intval = temp(); 
-		    gera (DIV,$1.intval,$3.intval,$$.intval);
     } 
-            | _id _ATRIB E { /* S-> id = E */	
-            $$.intval = temp(); 
-		    gera (DIV,$1.intval,$3.intval,$$.intval);
+    | _ID _ATRIB E { /* S-> id = E */	
+            gera (ATRIB,$3.intval,$1.intval,NADA);
+            printf("\n");
     } 
     | _PRINT _ABREPAR E _FECHAPAR { 
             /* S-> print(E) */	
             $$.intval = temp(); 
-		    gera (DIV,$1.intval,$3.intval,$$.intval);
+		        gera (PRINT,$3.intval,NADA,NADA);
+            printf("\n");
     } 
 
 E    : E _MAIS T { 
             /* E-> E+T */
             $$.intval = temp(); 
-		    gera (ADD,$1.intval,$3.intval,$$.intval);
+		        gera (ADD,$1.intval,$3.intval,$$.intval);
     }
     | E _MENOS T{  
             /* E-> E-T */
             $$.intval = temp(); 
-		    gera (SUB,$1.intval,$3.intval,$$.intval);
+		        gera (SUB,$1.intval,$3.intval,$$.intval);
     }
     | T	 { 
             /* E-> T */	
             $$.intval = $1.intval;
     } 
+
 T    : T _MULT F {
             /* T-> T*F */
-		    $$.intval=insertSymbTab($1.symbol, Variable);
+            $$.intval = temp(); 
+            gera (MUL,$1.intval,$3.intval,$$.intval);
     } 
      | F {
             /* T-> F */
-	    $$.intval=insertSymbTab($1.symbol, Constant);
+            $$.intval = $1.intval;
     } 
-F    : _id {
+
+F    : _ID {
             /* F-> id */
             $$.intval=insertSymbTab($1.symbol, Variable);
     } 
     | _N {
             /* F-> n */
             $$.intval=insertSymbTab($1.symbol, Constant);
+    }
+
+M    : {
+            $$.indiceQuadrupla = prox;
+            prox++;
+    }
+
+N    : {
+            $$.indiceQuadrupla = prox;
+            prox++;
     }
 %%
 
