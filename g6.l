@@ -85,9 +85,6 @@ RET             [\n]
 {IF}         	{
 		return _IF;
 		}
-{WHILE}         {
-		return _WHILE;
-		}
 {ELSE}         	{
 		return _ELSE;
 		}

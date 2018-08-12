@@ -195,7 +195,7 @@ int main()
 %token _ERRO _INTTYPE _PTV
 %token _N _V _ID
 %type<t> B C S E T F _N _V _ID
-%type<j> M N
+%type<j> M
 %%
 /* 
 regras da gramatica e acoes semanticas
@@ -300,11 +300,6 @@ F    : _ID {
     }
 
 M    : {
-            $$.indiceQuadrupla = prox;
-            prox++;
-    }
-
-N    : {
             $$.indiceQuadrupla = prox;
             prox++;
     }
