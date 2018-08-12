@@ -1,16 +1,16 @@
-guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ bison -d IdNum.y
-guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ flex IdNum.l
-guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ cc lex.yy.c IdNum.tab.c -o IdNum
-IdNum.y:66:6: warning: conflicting types for ‘yyerror’ [enabled by default]
+guest-z0jEJh@pc28:/var/guest-data/compilg6$ bison -d g6.y
+guest-z0jEJh@pc28:/var/guest-data/compilg6$ flex g6.l
+guest-z0jEJh@pc28:/var/guest-data/compilg6$ cc lex.yy.c g6.tab.c -o g6.tab
+g6.y:66:6: warning: conflicting types for ‘yyerror’ [enabled by default]
  void yyerror(const char *str)
       ^
-IdNum.y:56:5: note: previous implicit declaration of ‘yyerror’ was here
+g6.y:56:5: note: previous implicit declaration of ‘yyerror’ was here
      yyerror (ptMsg);
      ^
-guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ ls
-IdNum  IdNum.l  IdNum.l~  IdNum.tab.c  IdNum.tab.h  IdNum.y  IdNum.y~  lex.yy.c
-guest-z0jEJh@pc28:/var/guest-data/compilIdNum$ ./IdNum
-...>IdNum 
+guest-z0jEJh@pc28:/var/guest-data/compilg6$ ls
+g6  g6.l  g6.l~  g6.tab.c  g6.tab.h  g6.y  g6.y~  lex.yy.c
+guest-z0jEJh@pc28:/var/guest-data/compilg6$ ./g6
+...>g6 
 >x 1 y 2 z 3
 
 > Variable: x 0 
