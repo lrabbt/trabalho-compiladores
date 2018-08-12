@@ -111,7 +111,10 @@ SUB,
 MUL,
 DIV,
 STO,
-PRINT
+PRINT, 
+JUMP, 
+JF, 
+JT
 } Operador;
 
 char nomeOperador  [6] [7] = {
@@ -236,11 +239,14 @@ C    : C _PTV S {
             /* C-> S */
     } 
 
-S    : _IF _ABREPAR E _FECHAPAR _THEN B _ELSE B {
+S    : _IF _ABREPAR E _FECHAPAR _THEN M B _ELSE M B {
             /* S-> if (E) then B else B */	
+            remenda($6.indiceQuadrupla, JF, $3.intval, prox, NADA);
+            remenda($9.indiceQuadrupla, JT, $3.intval, prox, NADA);
     }	
-    | _IF _ABREPAR E _FECHAPAR _THEN B { 
+    | _IF _ABREPAR E _FECHAPAR _THEN M B { 
             /* S-> if (E) then B */	
+            remenda($6.indiceQuadrupla, JF, $3.intval, prox, NADA);
     }     
     | _WHILE _ABREPAR E _FECHAPAR _DO B { 
             /* S-> while (E) do B */	
